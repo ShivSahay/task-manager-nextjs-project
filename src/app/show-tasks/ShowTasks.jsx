@@ -40,7 +40,7 @@ const ShowTasks = () => {
     }
   };
   return (
-    <div className="grid grid-cols-12 mt-3">
+    <div className="grid grid-cols-12 mt-3 h-screen">
       <div className=" col-span-6 col-start-4">
         <h1 className="text-3xl text-center mb-3">
           Your tasks ({tasks.length})

@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import { login, signUp } from "@/services/userService";
 import { useRouter } from "next/navigation";
 import UserContext from "@/context/userContext";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const Login = () => {
   const router = useRouter();
@@ -14,26 +15,28 @@ const Login = () => {
     email: "",
     password: "",
   });
+  const [disable, setDisable] = useState(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    // console.log(event);
+    setDisable(true);
     if (loginData.email.trim() === "" || loginData.email == null) {
       toast.info("Email is required !!", {
         position: "top-center",
       });
+      setDisable(false);
       return;
-    }else if(loginData.password.trim() === "" || loginData.password == null){
-        toast.info("Password is required !!",{
-            position : "top-center",
-        });
-        return;
+    } else if (loginData.password.trim() === "" || loginData.password == null) {
+      toast.info("Password is required !!", {
+        position: "top-center",
+      });
+      setDisable(false);
+      return;
     }
 
     // Login Form Submit Code
     try {
       const result = await login(loginData);
-      // console.log(result);
       toast.success("Logged In user !!", {
         position: "top-center",
       });
@@ -44,6 +47,7 @@ const Login = () => {
       context.setUser(result.user);
       router.push("/profile/user");
     } catch (error) {
+      setDisable(false);
       console.log(error);
       toast.error("Login Errpr !!" + error.response.data.message, {
         position: "top-center",
@@ -52,24 +56,26 @@ const Login = () => {
   };
 
   const resetForm = () => {
+    setDisable(false);
     setLoginData({
       email: "",
       password: "",
     });
   };
+
   return (
-    <div className="grid grid-cols-12 justify-center">
+    <div className="grid grid-cols-12 justify-center h-screen">
       <div className="col-span-4 col-start-5 ">
         <div className="py-5">
-          {/* <div className="my-8 flex justify-center">
+          <div className="my-4 flex justify-center">
             <Image
               src={SignupSvg}
               style={{
-                width: "40%",
+                width: "60%",
               }}
               alt="SignUp banner"
             />
-          </div> */}
+          </div>
           <h1 className="text-3xl text-center">Login Here</h1>
           <form action="#" method="post" onSubmit={handleSubmit}>
             <div className="grid gap-6 mb-6 mt-6 md:grid-cols-1">
@@ -120,15 +126,22 @@ const Login = () => {
                 />
               </div>
               <div className="mt-4 flex justify-center">
-                <button type="submit" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
-                  Sign Up
+                <button
+                  type="submit"
+                  className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                >
+                  {!disable ? "Login" : <CircularProgress color="secondary" className="h-4" />}
                 </button>
-                <button type="reset" onClick={resetForm} className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+                <button
+                  type="reset"
+                  onClick={resetForm}
+                  className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
+                >
                   Clear
                 </button>
               </div>
             </div>
-            {JSON.stringify(loginData)}
+            {/* {JSON.stringify(loginData)} */}
           </form>
         </div>
       </div>

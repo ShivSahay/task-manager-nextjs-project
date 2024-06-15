@@ -12,13 +12,13 @@ export async function POST(request) {
     const user = await User.findOne({ email: email });
     if (user == null) {
       throw new Error("User not found !!");
-    }
+    }     
     //password matched
     const matched = bcrypt.compareSync(password, user.password);
     if (!matched) {
       throw new Error("Password not matched !!");
     }
-    // genrate jwt token
+    // Genrate jwt token
     const token = jwt.sign(
       {
         _id: user._id,
@@ -27,7 +27,7 @@ export async function POST(request) {
       process.env.JWT_KEY
     );
 
-    // create next response for cookie header
+    // Create next response for cookie header
     const response = NextResponse.json(
       {
         message: "Login Success !!",
